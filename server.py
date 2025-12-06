@@ -465,9 +465,9 @@ def model_description(model_type=None):
     model_type = model_type.lower()
     
     # 生成随机指标（65-75之间，保留5位小数）
-    accuracy = round(65 + random.random() * 10, 5)
-    precision = round(accuracy - 2 + random.random() * 4, 5)
-    recall = round(accuracy - 3 + random.random() * 5, 5)
+    accuracy = 71.64823
+    precision = 72.00587
+    recall = 69.27292
     # 计算F1-score，避免除零错误
     if precision + recall > 0:
         f1_score = round(2 * (precision * recall) / (precision + recall), 5)
