@@ -504,43 +504,26 @@ def predict_audio(audio_path):
         std_error = np.std(error_values)
         anomaly_threshold_frame = mean_error + 2 * std_error
         
+        # 只保留异常帧的时间信息，精简数据
         anomalous_frames = [
             {
-                'frame_index': fe['frame_index'],
-                'error': fe['error'],
                 'time_seconds': fe['time_seconds'],
                 'severity': 'high' if fe['error'] > mean_error + 3 * std_error else 'medium'
             }
             for fe in frame_errors
             if fe['error'] > anomaly_threshold_frame
         ]
-        frame_error_stats = {
-            'mean': float(mean_error),
-            'std': float(std_error),
-            'max': float(np.max(error_values)),
-            'min': float(np.min(error_values)),
-            'anomaly_threshold': float(anomaly_threshold_frame)
-        }
     else:
         anomalous_frames = []
-        frame_error_stats = {
-            'mean': 0.0,
-            'std': 0.0,
-            'max': 0.0,
-            'min': 0.0,
-            'anomaly_threshold': 0.0
-        }
 
+    # 精简返回数据，只保留必要信息
     return {
         'anomaly_score': float(anomaly_score),
         'threshold': float(threshold) if threshold else None,
         'is_anomaly': bool(is_anomaly),
         'confidence': float(confidence),
-        'num_frames': len(frame_errors),
         'audio_duration': float(len(y) / sr),
-        'frame_errors': frame_errors,  # 所有帧的误差信息
-        'anomalous_frames': anomalous_frames,  # 异常帧列表
-        'frame_error_statistics': frame_error_stats  # 帧误差统计信息
+        'anomalous_times': anomalous_frames  # 异常时间列表，包含时间（秒）和严重程度
     }
 
 @app.route('/health', methods=['GET'])
