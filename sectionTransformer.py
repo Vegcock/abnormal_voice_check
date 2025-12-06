@@ -341,13 +341,11 @@ def train(args):
 
     device = torch.device("cuda" if args.cuda and torch.cuda.is_available() else "cpu")
 
-    # 获取 LabelEncoder 和设备数量
     le = dataset.le
     se_le = dataset.se_le
     n_id = len(le.classes_) if le is not None else 0
     n_section = len(se_le.classes_) if se_le is not None else 0
 
-    # model
     feat_dim = dataset.samples[0][0].shape[1]
     freq_bins = dataset.samples[0][1].shape[-1]
     model = TransAutoencoder(
@@ -365,7 +363,6 @@ def train(args):
     mse_loss = nn.MSELoss(reduction='mean')
     ce_loss = nn.CrossEntropyLoss()
 
-    # 训练循环（中心帧预测 + ID 分类器 (若可用)）
     for epoch in range(1, args.epochs + 1):
         model.train()
         total_loss = 0.0
